@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Address from './shared/Address';
 import Parcel from './shared/Parcel';
+import api from '../helpers/API';
 
 class App extends Component {
   state = {
@@ -22,6 +23,23 @@ class App extends Component {
       height: '',
       weight: '',
     }
+  };
+
+  generateLabel = () => {
+    console.log("EasyPost API: ", api);
+
+    const fromAddress = new api.Address({
+      name: 'EasyPost',
+      street1: '118 2nd Street',
+      street2: '4th Floor',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94105',
+      phone: '415-123-4567'
+    });
+    fromAddress.save().then(addr => {
+      console.log(addr.id);
+    });
   };
 
   handleParcelInputChange = (evt) => {
@@ -108,7 +126,8 @@ class App extends Component {
           </div>
         </div>
         <hr />
-        <button className='btn btn-primary'>
+        <button className='btn btn-primary'
+                onClick={this.generateLabel}>
           Generate USPS Label
         </button>
       </div>
