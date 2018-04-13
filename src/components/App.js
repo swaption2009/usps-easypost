@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Address from './shared/Address';
 import Parcel from './shared/Parcel';
+import Label from './shared/Label';
 import api from '../helpers/API';
 
 class App extends Component {
@@ -22,11 +23,15 @@ class App extends Component {
       width: '',
       height: '',
       weight: '',
-    }
+    },
+    showLabel: false,
   };
 
   generateLabel = () => {
     console.log("EasyPost API: ", api);
+    this.setState({
+      showLabel: true,
+    });
 
     const fromAddress = new api.Address({
       name: 'EasyPost',
@@ -37,8 +42,9 @@ class App extends Component {
       zip: '94105',
       phone: '415-123-4567'
     });
-    fromAddress.save().then(addr => {
-      console.log(addr.id);
+    fromAddress.save()
+      .then(res => {
+      console.log(res);
     });
   };
 
@@ -130,6 +136,9 @@ class App extends Component {
                 onClick={this.generateLabel}>
           Generate USPS Label
         </button>
+        <br />
+        <br />
+        { this.state.showLabel ? <Label /> : null }
       </div>
     );
   }
