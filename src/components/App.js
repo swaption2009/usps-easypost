@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Address from './shared/Address';
 import Parcel from './shared/Parcel';
 import Label from './shared/Label';
-import api from '../helpers/API';
+import { axiosClient } from '../helpers/API';
 
 class App extends Component {
   state = {
@@ -25,27 +25,39 @@ class App extends Component {
       weight: '',
     },
     showLabel: false,
+    labelUrl: '',
   };
 
   generateLabel = () => {
-    console.log("EasyPost API: ", api);
-    this.setState({
-      showLabel: true,
-    });
-
-    const fromAddress = new api.Address({
-      name: 'EasyPost',
-      street1: '118 2nd Street',
-      street2: '4th Floor',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94105',
-      phone: '415-123-4567'
-    });
-    fromAddress.save()
-      .then(res => {
-      console.log(res);
-    });
+    axiosClient.post(`/shipments.json`, {
+      shipment: {
+        "fromCompany": this.state.fromAddress[0].company,
+        "fromPhone": this.state.fromAddress[0].phone,
+        "fromStreet1": this.state.fromAddress[0].street1,
+        "fromStreet2": this.state.fromAddress[0].street2,
+        "fromCity": this.state.fromAddress[0].city,
+        "fromState": this.state.fromAddress[0].state,
+        "fromZip": this.state.fromAddress[0].zip,
+        "fromCountry": this.state.fromAddress[0].country,
+        "toCompany": this.state.toAddress[0].company,
+        "toPhone": this.state.toAddress[0].phone,
+        "toStreet1": this.state.toAddress[0].street1,
+        "toStreet2": this.state.toAddress[0].street2,
+        "toCity": this.state.toAddress[0].city,
+        "toState": this.state.toAddress[0].state,
+        "toZip": this.state.toAddress[0].zip,
+        "toCountry": this.state.toAddress[0].country,
+        "length": this.state.parcel.length,
+        "width": this.state.parcel.width,
+        "height": this.state.parcel.height,
+        "weight": this.state.parcel.weight
+      }
+    })
+      .then(res => this.setState({
+        showLabel: true,
+        labelUrl: res.data,
+      })
+    )
   };
 
   handleParcelInputChange = (evt) => {
@@ -138,7 +150,7 @@ class App extends Component {
         </button>
         <br />
         <br />
-        { this.state.showLabel ? <Label /> : null }
+        { this.state.showLabel ? <Label labelUrl={this.state.labelUrl} /> : null }
       </div>
     );
   }

@@ -1,6 +1,7 @@
-import EasyPost from '@easypost/api';
+import axios from 'axios';
 
-const apiKey = 'RUdcDFhINYuxQUaqdOs06Q';
-const api = new EasyPost(apiKey);
+export const ROOT_URL = 'http://localhost:3000';
 
-export default api;
+export const axiosClient = axios.create({
+  baseURL: 'http://localhost:3000'
+});
